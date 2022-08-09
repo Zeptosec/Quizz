@@ -15,7 +15,7 @@ const taskSchema = new Schema({
         type: Number,
         required: true
     },
-    diffulty: {
+    difficulty: {
         type: Number,
         required: true
     }

@@ -1,9 +1,16 @@
-const task = require('../models/taskModel');
+const Task = require('../models/taskModel');
 const mongoose = require('mongoose');
 
 // Create new tasks in database
 const createTask = async (req, res) => {
+    const { question, answer, points, difficulty } = req.body;
 
+    try {
+        const task = await Task.create({question, answer, points, difficulty});
+        res.status(200).json(task);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 }
 
 // Get all tasks from database
