@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 // Create new tasks in database
 const createTask = async (req, res) => {
-    const { question, answer, points, difficulty } = req.body;
+  const { question, answer, points, difficulty } = req.body;
 
     try {
         if (answer.length == 0) {
@@ -19,19 +19,19 @@ const createTask = async (req, res) => {
 
 // Get all tasks from database
 const getTasks = async (req, res) => {
-    const tasks = await Task.find({}).sort({ createdAt: -1 });
-    const answers = await Answer.find({}).sort({ createdAt: -1 });
+  const tasks = await Task.find({}).sort({ createdAt: -1 });
+  const answers = await Answer.find({}).sort({ createdAt: -1 });
 
-    res.status(200).json({ tasks, answers });
+  res.status(200).json({ tasks, answers });
 };
 
 // Get a single task from database
 const getTask = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: "Id was invalid" });
-    }
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Id was invalid" });
+  }
 
     const task = await Task.findById(id);
     if (!task) {
@@ -42,7 +42,7 @@ const getTask = async (req, res) => {
 };
 
 module.exports = {
-    createTask,
-    getTasks,
-    getTask,
+  createTask,
+  getTasks,
+  getTask,
 };
