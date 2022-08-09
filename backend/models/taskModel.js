@@ -7,10 +7,6 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
-    answer: [{
-        type: String,
-        required: true
-    }],
     points: {
         type: Number,
         required: true
@@ -21,4 +17,15 @@ const taskSchema = new Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('task', taskSchema);
+const answerSchema = new Schema({
+    question_id: mongoose.Schema.Types.ObjectId,
+    answer: [{
+        type: String,
+        required: true
+    }]
+});
+
+module.exports = { 
+    Task: mongoose.model('task', taskSchema), 
+    Answer: mongoose.model('answer', answerSchema)
+};
