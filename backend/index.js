@@ -4,10 +4,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const taskRoutes = require('./routes/tasks');
+
 const app = express();
 
 app.use(cors());
 app.use(express.json()); // for parsing json
+app.use('/api/tasks', taskRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({ message: "We're good to go!" });
