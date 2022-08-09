@@ -1,4 +1,4 @@
-const Task = require("../models/taskModel");
+const { Task, Answer } = require("../models/taskModel");
 const mongoose = require("mongoose");
 
 // Create new tasks in database
@@ -20,8 +20,9 @@ const createTask = async (req, res) => {
 // Get all tasks from database
 const getTasks = async (req, res) => {
   const tasks = await Task.find({}).sort({ createdAt: -1 });
+  const answers = await Answer.find({}).sort({ createdAt: -1 });
 
-  res.status(200).json(tasks);
+  res.status(200).json({ tasks, answers });
 };
 
 // Get a single task from database
@@ -36,7 +37,8 @@ const getTask = async (req, res) => {
   if (!task) {
     return res.status(404).json({ error: "Task not found" });
   }
-  res.status(200).json(task);
+  const answers = await Answer.find({ question_id: task._id });
+  res.status(200).json(task, answers);
 };
 
 module.exports = {
