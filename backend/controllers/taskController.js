@@ -7,7 +7,7 @@ const createTask = async (req, res) => {
 
   try {
     if (answer.length == 0) {
-      throw Error("Ad an answer");
+      throw Error("Add an answer");
     } else {
       const task = await Task.create({ question, answer, points, difficulty });
       res.status(200).json(task);
