@@ -6,17 +6,18 @@ const answerChecker = async (req, res) => {
     const { answer, id } = req.body;
 
     try {
-        const answers = await Answer.find({ question_id: task._id });
+        const answers = await Answer.find({ question_id: id });
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw Error("Wrong ID");
         }
-        answers.forEach((element) => {
-            if (answer == element) {
-                return res.status(200).json({ question: "correct" });
+        
+        for(let i = 0; i < answers[0].answer.length; i++){
+            if (answer == answers[0].answer[i]) {
+                return res.status(200).json({ answer: "correct" });
             }
-        });
+        }
 
-        res.status(200).json({ question: "wrong" });
+        res.status(200).json({ answer: "wrong" });
     } catch (err) {
         res.status(401).json({ error: err.message });
     }
