@@ -5,16 +5,16 @@ const mongoose = require("mongoose");
 const createTask = async (req, res) => {
     const { question, answer, points, difficulty } = req.body;
 
-    try {
-        if (answer.length == 0) {
-            throw Error("Ad an answer");
-        } else {
-            const task = await Task.create({ question, answer, points, difficulty });
-            res.status(200).json(task);
-        }
-    } catch (err) {
-        res.status(400).json({ message: err.message });
+  try {
+    if (answer.length == 0) {
+      throw Error("Add an answer");
+    } else {
+      const task = await Task.create({ question, answer, points, difficulty });
+      res.status(200).json(task);
     }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
 
 // Get all tasks from database
