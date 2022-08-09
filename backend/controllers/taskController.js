@@ -11,7 +11,7 @@ const createTask = async (req, res) => {
         }
         const task = await Task.create({ question, points, difficulty });
         const answers = await Answer.create({ question_id: task._id, answer });
-        res.status(200).json(task, answers);
+        res.status(200).json({ task, answers });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -38,7 +38,7 @@ const getTask = async (req, res) => {
         return res.status(404).json({ error: "Task not found" });
     }
     const answers = await Answer.find({ question_id: task._id });
-    res.status(200).json(task, answers);
+    res.status(200).json({ task, answers });
 };
 
 module.exports = {
