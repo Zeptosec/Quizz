@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 // Create new tasks in database
 const createTask = async (req, res) => {
-  const { question, answer, points, difficulty } = req.body;
+    const { question, answer, points, difficulty } = req.body;
 
     try {
         if (answer.length == 0) {
@@ -19,19 +19,19 @@ const createTask = async (req, res) => {
 
 // Get all tasks from database
 const getTasks = async (req, res) => {
-  const tasks = await Task.find({}).sort({ createdAt: -1 });
-  const answers = await Answer.find({}).sort({ createdAt: -1 });
+    const tasks = await Task.find({}).sort({ createdAt: -1 });
+    const answers = await Answer.find({}).sort({ createdAt: -1 });
 
-  res.status(200).json({ tasks, answers });
+    res.status(200).json({ tasks, answers });
 };
 
 // Get a single task from database
 const getTask = async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "Id was invalid" });
-  }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "Id was invalid" });
+    }
 
     const task = await Task.findById(id);
     if (!task) {
@@ -41,8 +41,20 @@ const getTask = async (req, res) => {
     res.status(200).json({ task, answers });
 };
 
+// Gets random question from database
+const getNextTask = async (req, res) => {
+    const count = await Task.estimatedDocumentCount({});
+    if (count == 0) {
+        return res.status(404).json({ message: "There are no tasks to choose from" });
+    }
+    const rnd = Math.floor(Math.random() * count);
+    const rndTask = await Task.findOne().skip(rnd);
+    res.status(200).json({ rndTask });
+}
+
 module.exports = {
-  createTask,
-  getTasks,
-  getTask,
+    createTask,
+    getTasks,
+    getTask,
+    getNextTask
 };

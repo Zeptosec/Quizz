@@ -3,11 +3,15 @@ const router = express.Router();
 const { 
     createTask,
     getTask,
-    getTasks
+    getTasks,
+    getNextTask
 } = require('../controllers/taskController');
 
 //get all tasks
 router.get('/', getTasks);
+
+//get next task
+router.get('/next', getNextTask);
 
 //get single tasks
 router.get('/:id', getTask);
