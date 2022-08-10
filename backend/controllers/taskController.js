@@ -1,4 +1,4 @@
-const { Task, Answer } = require("../models/taskModel");
+const Task = require("../models/taskModel");
 const mongoose = require("mongoose");
 
 // Checks if question answer was correct or not
@@ -6,18 +6,17 @@ const answerChecker = async (req, res) => {
     const { answer, id } = req.body;
 
     try {
-        const answers = await Answer.find({ question_id: id });
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw Error("Wrong ID");
         }
-        
-        for(let i = 0; i < answers[0].answer.length; i++){
-            if (answer == answers[0].answer[i]) {
-                return res.status(200).json({ answer: "correct" });
+        const task = await Task.find({ _id: id });
+        for (let i = 0; i < task[0].answers.length; i++) {
+            if (answer == task[0].answers[i]) {
+                return res.status(200).json({ right: true });
             }
         }
 
-        res.status(200).json({ answer: "wrong" });
+        res.status(200).json({ right: false });
     } catch (err) {
         res.status(401).json({ error: err.message });
     }
@@ -25,15 +24,14 @@ const answerChecker = async (req, res) => {
 
 // Create new tasks in database
 const createTask = async (req, res) => {
-    const { question, answer, points, difficulty } = req.body;
+    const { question, answers, points, difficulty } = req.body;
 
     try {
-        if (answer.length == 0) {
+        if (!answers || answers.length == 0) {
             throw Error("Add an answer");
         }
-        const task = await Task.create({ question, points, difficulty });
-        const answers = await Answer.create({ question_id: task._id, answer });
-        res.status(200).json({ task, answers });
+        const task = await Task.create({ question, answers, points, difficulty });
+        res.status(200).json({ task });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -42,9 +40,8 @@ const createTask = async (req, res) => {
 // Get all tasks from database
 const getTasks = async (req, res) => {
     const tasks = await Task.find({}).sort({ createdAt: -1 });
-    const answers = await Answer.find({}).sort({ createdAt: -1 });
 
-    res.status(200).json({ tasks, answers });
+    res.status(200).json({ tasks });
 };
 
 // Get a single task from database
@@ -59,8 +56,7 @@ const getTask = async (req, res) => {
     if (!task) {
         return res.status(404).json({ error: "Task not found" });
     }
-    const answers = await Answer.find({ question_id: task._id });
-    res.status(200).json({ task, answers });
+    res.status(200).json({ task });
 };
 
 // Gets random question from database
@@ -71,7 +67,12 @@ const getNextTask = async (req, res) => {
     }
     const rnd = Math.floor(Math.random() * count);
     const rndTask = await Task.findOne().skip(rnd);
-    res.status(200).json({ rndTask });
+    res.status(200).json({
+        question: rndTask.question,
+        _id: rndTask._id,
+        points: rndTask.points,
+        difficulty: rndTask.difficulty
+    });
 }
 
 module.exports = {
