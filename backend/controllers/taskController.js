@@ -81,7 +81,7 @@ const getNextTask = async (req, res) => {
 
     const count = await Task.estimatedDocumentCount({});
     if (count == 0) {
-        return res.status(404).json({ message: "There are no tasks to choose from" });
+        return res.status(404).json({ error: "There are no tasks to choose from" });
     }
     const rnd = Math.floor(Math.random() * count);
     const rndTask = await Task.findOne().skip(rnd);
