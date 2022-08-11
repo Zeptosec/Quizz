@@ -12,11 +12,11 @@ const answerChecker = async (req, res) => {
         const task = await Task.find({ _id: id });
         for (let i = 0; i < task[0].answers.length; i++) {
             if (answer == task[0].answers[i]) {
-                return res.status(200).json({ right: true });
+                return res.status(200).json({ isCorrect: true });
             }
         }
 
-        res.status(200).json({ right: false });
+        res.status(200).json({ isCorrect: false });
     } catch (err) {
         res.status(401).json({ error: err.message });
     }
@@ -61,6 +61,7 @@ const getTask = async (req, res) => {
 
 // Gets random question from database
 const getNextTask = async (req, res) => {
+
     const count = await Task.estimatedDocumentCount({});
     if (count == 0) {
         return res.status(404).json({ message: "There are no tasks to choose from" });
@@ -71,7 +72,8 @@ const getNextTask = async (req, res) => {
         question: rndTask.question,
         _id: rndTask._id,
         points: rndTask.points,
-        difficulty: rndTask.difficulty
+        difficulty: rndTask.difficulty,
+        qnum: 1
     });
 }
 
