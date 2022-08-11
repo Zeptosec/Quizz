@@ -5,7 +5,8 @@ const {
     getTask,
     getTasks,
     getNextTask,
-    answerChecker
+    answerChecker,
+    deleteTask
 } = require('../controllers/taskController');
 
 //get all tasks
@@ -17,8 +18,11 @@ router.get('/next', getNextTask);
 //check answer
 router.post('/check', answerChecker);
 
-//get single tasks
+//get single task
 router.get('/:id', getTask);
+
+//delete single task
+router.delete('/:id', deleteTask);
 
 //create new task
 router.post('/', createTask);

@@ -26,6 +26,20 @@ code {
   display: inline-block;
 }
 
+.task {
+  position: relative;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+.task span{
+  position: absolute;
+  top: 30px;
+  right:40px;
+}
+
 .admin button {
   margin: 5px;
   padding: 5px 10px;

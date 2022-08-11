@@ -37,6 +37,23 @@ const createTask = async (req, res) => {
     }
 };
 
+const deleteTask = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw Error("Wrong ID");
+        }
+        const task = await Task.findOneAndDelete({ _id: id });
+        if (!task) {
+            res.status(404).json({ error: "Task not found" });
+        }
+        res.status(200).json(task);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+}
+
 // Get all tasks from database
 const getTasks = async (req, res) => {
     const tasks = await Task.find({}).sort({ createdAt: -1 });
@@ -82,5 +99,6 @@ module.exports = {
     getTasks,
     getTask,
     getNextTask,
-    answerChecker
+    answerChecker,
+    deleteTask
 };

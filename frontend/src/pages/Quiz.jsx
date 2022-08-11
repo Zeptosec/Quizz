@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 
 const Quiz = () => {
-    const [question, setQuestion] = useState("");
+    const [question, setQuestion] = useState({});
     const [answer, setAnswer] = useState("");
-    const [questionId, setQuestionId] = useState("");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [right, setRight] = useState(null);
@@ -15,8 +14,7 @@ const Quiz = () => {
         const json = await res.json();
 
         if (res.ok) {
-            setQuestion(json.question);
-            setQuestionId(json._id);
+            setQuestion(json);
         } else {
             setError(json.error);
         }
@@ -33,7 +31,7 @@ const Quiz = () => {
         const res = await fetch("http://localhost:4000/api/tasks/check", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ answer, id: questionId })
+            body: JSON.stringify({ answer, id: question._id })
         });
 
         const json = await res.json();
@@ -50,8 +48,8 @@ const Quiz = () => {
         <div className="quiz">
             <div className="task">
                 <form onSubmit={handleSubmit}>
-                    <h2>Question</h2>
-                    <p>{question}</p>
+                    <h2>Question { }</h2>
+                    <p>{question.question}</p>
                     <label>Answer: </label>
                     <input
                         type="text"
