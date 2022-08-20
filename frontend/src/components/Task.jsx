@@ -9,14 +9,15 @@ const Task = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isCorrect, setIsCorrect] = useState(null);
 
-    const handleCheck = async () => {
+    const handleCheck = async (e) => {
+        e.preventDefault();
         setIsLoading(true);
         const res = await fetch("http://localhost:4000/api/tasks/check", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ answer, id: task._id })
         });
-
+        console.log("sub");
         const json = await res.json();
         if (!res.ok) {
             setMessage(json.error);
@@ -48,7 +49,7 @@ const Task = () => {
     }, []);
 
     return (
-        <div className="question">
+        <form className="question" onSubmit={handleCheck}>
             <h2>{task.question}</h2>
             <label htmlFor="">Answer: </label>
             <input
@@ -56,10 +57,10 @@ const Task = () => {
                 onChange={e => setAnswer(e.target.value)}
                 value={answer}
             />
-            <button disabled={isLoading} onClick={handleCheck}>Check</button>
+            <button disabled={isLoading}>Check</button>
             {isCorrect != null && <button disabled={isLoading} onClick={handleNext}>Next</button>}
             <p>{message}</p>
-        </div>
+        </form>
     )
 }
 

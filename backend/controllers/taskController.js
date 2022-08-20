@@ -10,12 +10,44 @@ const answerChecker = async (req, res) => {
             throw Error("Wrong ID");
         }
         const task = await Task.find({ _id: id });
-        for (let i = 0; i < task[0].answers.length; i++) {
-            if (answer == task[0].answers[i]) {
-                return res.status(200).json({ isCorrect: true });
-            }
-        }
 
+        switch (task[0].type) {
+            case "free":
+                for (let i = 0; i < task[0].answers.length; i++) {
+                    if (answer == task[0].answers[i]) {
+                        return res.status(200).json({ isCorrect: true });
+                    }
+                }
+                break;
+            case "choice":
+                let tmpAnswers = [];
+                for(let i = 0; i < answer.length; i++){
+                    tmpAnswers.push(answer[i].toString());
+                }
+                let usedChoices = [];
+                const val = 1 / task[0].answers.length;
+                let score = 0;
+                let cnt = 0;
+                for(let i = 0; i < tmpAnswers.length; i++){
+                    if(cnt++ > task[0].choices.length){
+                        score = 0;
+                        break; // if somehow user sent more answers then there are choices
+                    }
+                    if(task[0].answers.includes(tmpAnswers[i]) && !usedChoices.includes(tmpAnswers[i])){
+                        score += val; // reward with correct answer
+                        usedChoices.push(tmpAnswers[i]);
+                    } else {
+                        score -= val; // punish for wrong answer
+                    }
+                }
+                if(score >= 0.5){
+                    return res.status(200).json({ isCorrect: true });
+                }
+                break;
+            default:
+                console.log(task);
+                throw Error("Unknown question type.");
+        }
         res.status(200).json({ isCorrect: false });
     } catch (err) {
         res.status(401).json({ error: err.message });
@@ -24,13 +56,22 @@ const answerChecker = async (req, res) => {
 
 // Create new tasks in database
 const createTask = async (req, res) => {
-    const { question, answers, points, difficulty } = req.body;
-
+    const { question, answers, points, difficulty, type, choices } = req.body;
     try {
         if (!answers || answers.length == 0) {
             throw Error("Add an answer");
         }
-        const task = await Task.create({ question, answers, points, difficulty });
+        let task;
+        switch (type) {
+            case "free":
+                task = await Task.create({ question, answers, points, difficulty, type });
+                break;
+            case "choice":
+                task = await Task.create({ question, answers, points, difficulty, type, choices });
+                break;
+            default:
+                throw Error("Incorrect question type");
+        }
         res.status(200).json({ task });
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -90,7 +131,8 @@ const getNextTask = async (req, res) => {
         _id: rndTask._id,
         points: rndTask.points,
         difficulty: rndTask.difficulty,
-        qnum: 1
+        choices: rndTask.choices,
+        type: rndTask.type,
     });
 }
 

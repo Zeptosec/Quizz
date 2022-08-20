@@ -1,7 +1,16 @@
-
 :root {
   --primary: #1aac83;
+  --selected: rgb(2, 69, 255);
+  --selected-hover: rgb(86, 131, 255);
   --error: #e7195a;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
 }
 
 body {
@@ -40,15 +49,21 @@ code {
   padding: 10px;
 }
 
-.task span{
+.task span {
   position: absolute;
   top: 30px;
-  right:40px;
+  right: 40px;
 }
 
-.question {
-  max-width: 60%;
-  background-color: #f9f9f9;
+.quiz {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.quiz .score {
+  margin: auto;
+  font-size: 2cm;
+  font-weight: 600;
 }
 
 .pages {
@@ -72,6 +87,12 @@ nav a {
   gap: 100px;
 }
 
+.admin-choices {
+  display: grid;
+  grid-template-columns: 45px auto;
+  grid-gap: 5px;
+}
+
 .question-details h4 {
   margin: 0 0 10px 0;
   font-size: 1.2em;
@@ -88,7 +109,7 @@ nav a {
   background: #fff;
   border-radius: 4px;
   margin: 10px auto;
-  
+
   text-align: left;
   padding: 20px;
   position: relative;
@@ -141,7 +162,8 @@ input {
   display: block;
 }
 
-input {
+input,
+select {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 20px;
@@ -178,4 +200,37 @@ input.error {
   color: var(--error);
   border-radius: 4px;
   margin: 20px 0;
+}
+
+.choices button {
+  transition: 200ms;
+  margin: 5px 8px;
+}
+
+.choices .open {
+  background-color: white;
+  border: 1px solid var(--selected);
+  color: var(--selected);
+  font-size: large;
+}
+
+.choices .open:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid white;
+}
+
+.choices .closed:hover {
+  background-color: var(--selected-hover);
+  border: 1px solid white;
+}
+
+.choices .closed {
+  background-color: var(--selected);
+  border: 1px solid var(--selected);
+  color: white;
+  font-size: large;
+}
+
+.choices {
+  margin: 11px;
 }

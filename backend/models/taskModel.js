@@ -7,6 +7,9 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
+    choices: [{
+        type: String
+    }],
     answers: [{
         type: String,
         required: true
@@ -18,6 +21,10 @@ const taskSchema = new Schema({
     difficulty: {
         type: Number,
         required: true
+    },
+    type: {
+        type: String,
+        required: true,
     }
 }, { timestamps: true });
 

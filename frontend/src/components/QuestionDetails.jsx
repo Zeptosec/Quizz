@@ -19,7 +19,9 @@ const QuestionDetails = ({ question }) => {
     return (
         <div className="question-details">
             <h4>{question.question}</h4>
-            <p><b>{question.answers.join(', ')}</b></p>
+            {question.type === "choice" ? <p>Choices: <b>{question.choices.join(", ")}</b></p> : ""}
+            <p>Answers: <b>{question.answers.join(', ')}</b></p>
+            <p>Type: {question.type}</p>
             <p>{formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })}</p>
             <span className="material-symbols-outlined" onClick={handleDelete}>delete</span>
         </div>
