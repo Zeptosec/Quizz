@@ -234,3 +234,11 @@ input.error {
 .choices {
   margin: 11px;
 }
+
+form.signup, form.login {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffefef;
+  border-radius: 5px;
+}

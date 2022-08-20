@@ -14,7 +14,7 @@ const DisplayChoice = ({ task, answer, setAnswer }) => {
             <p>Answers:</p>
             <div className="choices">
                 {task.choices.map((choice, i) =>
-                    <button type="button" className={answer.includes(i) ? "closed" : "open"} onClick={() => handleSelect(i)}>
+                    <button key={i} type="button" className={answer.includes(i) ? "closed" : "open"} onClick={() => handleSelect(i)}>
                         {choice}
                     </button>)}
             </div>

@@ -1,13 +1,20 @@
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+import { useAuthContext } from '../hooks/useAuthContext';
 import { useQuestionContext } from '../hooks/useQuestionsContext';
 
 const QuestionDetails = ({ question }) => {
     const { dispatch } = useQuestionContext();
+    const { user } = useAuthContext();
 
     const handleDelete = async () => {
-
-        const res = await fetch('http://localhost:4000/api/tasks/'+question._id, {
-            method: "DELETE"
+        if(!user) {
+            return;
+        }
+        const res = await fetch('http://localhost:4000/api/admin/'+question._id, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${user.token}`
+            }
         });
         const json = await res.json();
 

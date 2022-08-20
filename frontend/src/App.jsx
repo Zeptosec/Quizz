@@ -6,6 +6,8 @@ import AddNew from './pages/AddNew';
 import ViewTasks from './pages/ViewTasks';
 import Navbar from './components/Navbar';
 import Admin from './pages/Admin';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
             <Route path="/admin/new" element={<AddNew />} />
             <Route path="/admin/view" element={<ViewTasks />} />
             <Route path='/admin' element={<Admin />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
           </Routes>
         </div>
       </BrowserRouter>

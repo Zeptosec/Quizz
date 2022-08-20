@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useAuthContext } from "../hooks/useAuthContext";
 import { useQuestionContext } from "../hooks/useQuestionsContext";
 
 
@@ -9,6 +10,7 @@ const ChoicesQuestionForm = () => {
     const [inputList, setInputList] = useState([{ answer: "" }, { answer: "" }]);
     const [answersList, setAnswersList] = useState([]);
     const [message, setMessage] = useState("");
+    const { user } = useAuthContext();
 
     const handleInputChange = (e, index) => {
         const list = [...inputList];
@@ -29,6 +31,10 @@ const ChoicesQuestionForm = () => {
 
     const handleSubmit = async function (e) {
         e.preventDefault();
+        if(!user){
+            setMessage("First log in");
+            return;
+        }
         if (answersList.length === 0) {
             setMessage("Select at least one choice as an answer");
             return;
@@ -45,9 +51,12 @@ const ChoicesQuestionForm = () => {
         let answers = [];
         answersList.map(x => answers.push(x));
 
-        const res = await fetch("http://localhost:4000/api/tasks", {
+        const res = await fetch("http://localhost:4000/api/admin", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${user.token}`
+            },
             body: JSON.stringify({
                 question,
                 answers,
