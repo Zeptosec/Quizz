@@ -81,7 +81,7 @@ const getNextTask = async (req, res) => {
 
 const newTest = async (uid) => {
     console.log("new test")
-    const count = await Task.estimatedDocumentCount({});
+    let count = await Task.estimatedDocumentCount({});
     if (count == 0) {
         throw Error("There are currently no questions");
     }
