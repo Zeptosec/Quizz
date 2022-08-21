@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import DisplayChoice from "../components/DisplayChoice";
-import DisplayOpen from "../components/DisplayOpen";
 
+import { useLayout } from "../hooks/useLayout";
 
 const Quiz = () => {
     const [answer, setAnswer] = useState("");
@@ -11,6 +10,7 @@ const Quiz = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isCorrect, setIsCorrect] = useState(null);
     const [counter, setCounter] = useState({ right: 0, wrong: 0 });
+    const { getLayout } = useLayout(task, answer, setAnswer);
 
     const handleCheck = async (e) => {
         e.preventDefault();
@@ -57,30 +57,6 @@ const Quiz = () => {
         handleNext();
         console.log("effect")
     }, []);
-
-    const getLayout = () => {
-        console.log(task)
-        switch (task.type) {
-            case "free":
-                return <DisplayOpen
-                    answer={answer}
-                    setAnswer={setAnswer}
-                    task={task}
-                />
-            case "choice":
-                return <DisplayChoice
-                    answer={answer}
-                    setAnswer={setAnswer}
-                    task={task}
-                />
-            default:
-                return <DisplayOpen
-                    answer={answer}
-                    setAnswer={setAnswer}
-                    task={task}
-                />
-        }
-    }
 
     return (
         <div className="quiz">

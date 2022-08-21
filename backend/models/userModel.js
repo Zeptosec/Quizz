@@ -14,7 +14,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     }
-});
+}, { timestamps: true });
 
 userSchema.statics.login = async function (email, password) {
     if (!email || !password) {

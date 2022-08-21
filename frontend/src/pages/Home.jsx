@@ -5,8 +5,8 @@ const Home = () => {
 
     return (
         <div className="home">
-            <p>10 question test: </p>
-            <Link to="/quiz">Start</Link>
+            <Link to="/quiz" className='start'>Practice</Link>
+            <Link to="/test" className='start'>Test</Link>
         </div>
     );
 }

@@ -13,7 +13,9 @@ const requireAuth = async (req, res, next) => {
 
     try {
         const { _id } = jwt.verify(token, process.env.SECRET);
-
+        if(_id !== '6300e82eb51819aa9f1ba8c3'){
+            return res.status(401).json({error: "Unauthorized"});
+        }
         req.user = await User.findOne({ _id }).select('_id');
         next();
     } catch (err) {
