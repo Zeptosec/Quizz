@@ -282,3 +282,38 @@ form.signup, form.login {
   gap: 10px;
   justify-content: center;
 }
+
+.questions {
+  overflow-y: scroll;
+}
+
+html {
+  overflow: hidden;
+}
+
+table {
+  border-collapse: collapse;
+  margin: auto;
+}
+
+table th {
+  background-color: var(--primary);
+  color: white;
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+
+table tr:nth-child(even){
+  background-color: #eee;
+}
+
+table tr td:nth-child(1){
+  text-align: left;
+}
+
+table tr:hover {
+  background-color: #ddd;
+}

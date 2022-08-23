@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import TestResults from "../components/TestResults";
 import { useLayout } from "../hooks/useLayout";
 
 const Test = () => {
@@ -8,7 +9,11 @@ const Test = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [uid, setUid] = useState(null);
+    const [tid, setTid] = useState(null);
+    const [finished, setFinished] = useState(false);
+    const [results, setResults] = useState(null);
     const { getLayout } = useLayout(task, answer, setAnswer);
+    const [nickname, setNickName] = useState("");
 
     useEffect(() => {
         const loadQuestion = async () => {
@@ -19,7 +24,7 @@ const Test = () => {
                 setUid(tmpUser.uid);
             }
 
-            const res = await fetch('http://localhost:4000/api/tasks/gettesttask', {
+            const res = await fetch('http://localhost:4000/api/test', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ uid: tmpUser.uid })
@@ -35,6 +40,7 @@ const Test = () => {
                 }
                 setError(null);
                 setTask(json.task);
+                setTid(json.tid);
                 setAnswer("");
             }
             setIsLoading(false);
@@ -55,6 +61,26 @@ const Test = () => {
         }
     }
 
+    const getResults = async (tid) => {
+        if (!tid) {
+            setError("No test id was given");
+            return;
+        }
+        const res = await fetch('http://localhost:4000/api/test/results', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tid })
+        })
+
+        const json = await res.json();
+
+        if (res.ok) {
+            setResults(json.results);
+        } else {
+            setError(json.error);
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -70,17 +96,20 @@ const Test = () => {
             setIsLoading(false);
             return;
         }
-        const res = await fetch('http://localhost:4000/api/tasks/posttestanswer', {
+        console.log(task);
+        const res = await fetch('http://localhost:4000/api/test/answer', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ answer, uid, qid: task.qid })
+            body: JSON.stringify({ answer, tid, qid: task.qid })
         });
         const json = await res.json();
         if (res.ok) {
             if (json.finished) {
-                setError("Finished test!");
+                setFinished(true);
+                await getResults(json.tid);
             } else {
                 setTask(json.task);
+                setTid(json.tid);
                 setAnswer("");
             }
         } else {
@@ -96,12 +125,54 @@ const Test = () => {
         setIsLoading(false);
     }
 
+    const handleNick = async (e) => {
+        setIsLoading(true);
+        e.preventDefault();
+        if (nickname.length > 16 || nickname.length < 3 || !/^[a-zA-Z]+$/.test(nickname)) {
+            setError("Current nickname is invalid. Use only letters.");
+            setIsLoading(false);
+            return;
+        }
+
+        const res = await fetch('http://localhost:4000/api/test/submit', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tid, uid, nickname })
+        });
+
+        const json = await res.json();
+        console.log(json);
+
+        if (res.ok) {
+            setError(json.message);
+        } else {
+            setError(json.error);
+        }
+        setIsLoading(false);
+    }
+
     return (
         <div className="test">
-            <form action="" className="question" onSubmit={handleSubmit}>
-                {getLayout()}
-                <button disabled={isLoading}>Next</button>
-            </form>
+            {results !== null ? "" :
+                <form action="" className="question" onSubmit={handleSubmit}>
+                    {getLayout()}
+                    <button disabled={isLoading}>Next</button>
+                </form>}
+            {results !== null ?
+                <>
+                    <h2>Results:</h2>
+                    <TestResults headers={results.headers} data={results.data} />
+                    <form action="" className="signup" onSubmit={handleNick}>
+                        <label><h3>Nickname:</h3></label>
+                        <input
+                            type="text"
+                            onChange={e => setNickName(e.target.value)}
+                            value={nickname}
+                        />
+                        <button disabled={isLoading}>Submit</button>
+                    </form>
+                </>
+                : ""}
             {error}
         </div>
     )

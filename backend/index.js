@@ -1,5 +1,9 @@
 require('dotenv').config();
 
+///test imports !DELETE!
+const Test = require('./models/testModel');
+///
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -7,6 +11,8 @@ const cors = require('cors');
 const taskRoutes = require('./routes/tasks');
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/user');
+const testRoutes = require('./routes/tests');
+const leaderRoutes = require('./routes/leaderboard');
 
 const app = express();
 
@@ -15,9 +21,13 @@ app.use(express.json()); // for parsing json
 app.use('/api/tasks', taskRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/test', testRoutes);
+app.use('/api/leaderboard', leaderRoutes);
+app.get('/', async (req, res) => {
+    const test = await Test.findById('630542a4c6fad29c9124f57e');
+    const testPoints = test.tasks.reduce((acc, obj) => acc + obj.points, 0);
 
-app.get('/', (req, res) => {
-    res.status(200).json({ message: "We're good to go!" });
+    res.json({ testPoints })
 });
 
 mongoose.connect(process.env.MONG_URI, {

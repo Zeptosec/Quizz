@@ -16,6 +16,25 @@ const testSchema = new Schema({
     finished: {
         type: Boolean,
         required: true
+    },
+    finishedAt: {
+        type: Date,
+    },
+    published: {
+        type: Boolean,
+        required: true
+    },
+    nickname: {
+        type: String,
+        required: true
+    },
+    score: {
+        type: Number,
+        required: true
+    },
+    points: {
+        type: Number,
+        default: 0
     }
 }, { timestamps: true });
 

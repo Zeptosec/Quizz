@@ -4,13 +4,22 @@ import QuestionForm from '../components/QuestionForm'
 import { useQuestionContext } from '../hooks/useQuestionsContext';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useState } from 'react';
+import { useRef } from 'react';
 
 const Admin = () => {
+    const targetRef = useRef();
     const { questions, dispatch } = useQuestionContext();
     const { user } = useAuthContext();
     const [error, setError] = useState(null);
+    window.addEventListener('resize', handleResize);
+
+    function handleResize() {
+        if(!targetRef.current) return;
+        targetRef.current.style.maxHeight=`${window.innerHeight-126}px`
+    }
 
     useEffect(() => {
+        handleResize();
         const fetchQuestions = async () => {
             const res = await fetch('http://localhost:4000/api/admin', {
                 headers: {
@@ -31,7 +40,7 @@ const Admin = () => {
 
     return (
         <div className="admin">
-            <div className="questions">
+            <div ref={targetRef} className="questions">
                 {error && <div className='error'>{error}</div>}
                 {questions && questions.map(q =>
                     <QuestionDetails key={q._id} question={q} />
