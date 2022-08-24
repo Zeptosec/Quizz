@@ -9,7 +9,7 @@ const getAnswerPoints = (task, answer) => {
                     return 1;
                 }
             }
-            break;
+            return 0;
         case "choice":
             let tmpAnswers = [];
             for (let i = 0; i < answer.length; i++) {

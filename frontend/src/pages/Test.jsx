@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import TestResults from "../components/TestResults";
 import { useLayout } from "../hooks/useLayout";
+import LetterButtons from "../components/LetterButtons";
 
 const Test = () => {
     const [answer, setAnswer] = useState("");
@@ -10,7 +11,6 @@ const Test = () => {
     const [error, setError] = useState(null);
     const [uid, setUid] = useState(null);
     const [tid, setTid] = useState(null);
-    const [finished, setFinished] = useState(false);
     const [results, setResults] = useState(null);
     const { getLayout } = useLayout(task, answer, setAnswer);
     const [nickname, setNickName] = useState("");
@@ -18,13 +18,14 @@ const Test = () => {
     useEffect(() => {
         const loadQuestion = async () => {
             setIsLoading(true);
-            const tmpUser = JSON.parse(localStorage.getItem("tmpUser"));
-            console.log(tmpUser)
+            let tmpUser = JSON.parse(localStorage.getItem("tmpUser"));
             if (tmpUser) {
                 setUid(tmpUser.uid);
+            } else {
+                tmpUser = { uid: "null" };
             }
 
-            const res = await fetch('http://localhost:4000/api/test', {
+            const res = await fetch('https://latinapi.herokuapp.com/api/test', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ uid: tmpUser.uid })
@@ -35,13 +36,14 @@ const Test = () => {
             if (!res.ok) {
                 setError(json.error);
             } else {
-                if (!tmpUser) {
+                if (tmpUser.uid === 'null') {
                     localStorage.setItem("tmpUser", JSON.stringify({ uid: json.uid }))
                 }
                 setError(null);
                 setTask(json.task);
                 setTid(json.tid);
                 setAnswer("");
+                setUid(json.uid);
             }
             setIsLoading(false);
         }
@@ -66,7 +68,7 @@ const Test = () => {
             setError("No test id was given");
             return;
         }
-        const res = await fetch('http://localhost:4000/api/test/results', {
+        const res = await fetch('https://latinapi.herokuapp.com/api/test/results', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tid })
@@ -97,7 +99,7 @@ const Test = () => {
             return;
         }
         console.log(task);
-        const res = await fetch('http://localhost:4000/api/test/answer', {
+        const res = await fetch('https://latinapi.herokuapp.com/api/test/answer', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ answer, tid, qid: task.qid })
@@ -105,7 +107,6 @@ const Test = () => {
         const json = await res.json();
         if (res.ok) {
             if (json.finished) {
-                setFinished(true);
                 await getResults(json.tid);
             } else {
                 setTask(json.task);
@@ -134,7 +135,7 @@ const Test = () => {
             return;
         }
 
-        const res = await fetch('http://localhost:4000/api/test/submit', {
+        const res = await fetch('https://latinapi.herokuapp.com/api/test/submit', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tid, uid, nickname })
@@ -157,23 +158,27 @@ const Test = () => {
                 <form action="" className="question" onSubmit={handleSubmit}>
                     {getLayout()}
                     <button disabled={isLoading}>Next</button>
+                    <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
+
                 </form>}
             {results !== null ?
                 <>
-                    <h2>Results:</h2>
+                    <h2 className="center">Results:</h2>
                     <TestResults headers={results.headers} data={results.data} />
                     <form action="" className="signup" onSubmit={handleNick}>
-                        <label><h3>Nickname:</h3></label>
+                        <label><h3 className="center">Nickname:</h3></label>
                         <input
                             type="text"
                             onChange={e => setNickName(e.target.value)}
                             value={nickname}
                         />
-                        <button disabled={isLoading}>Submit</button>
+                        <div className="center">
+                            <button disabled={isLoading}>Submit</button>
+                        </div>
                     </form>
                 </>
                 : ""}
-            {error}
+            <p className="center">{error}</p>
         </div>
     )
 }

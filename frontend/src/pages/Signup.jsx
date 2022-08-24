@@ -14,7 +14,7 @@ const Signup = () => {
 
     return (
         <form className="signup" onSubmit={handleSubmit}>
-            <h3>Sign up</h3>
+            <h3 className="center">Sign up</h3>
             <label htmlFor="email">Email:</label>
             <input
                 type="email"
@@ -27,7 +27,9 @@ const Signup = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
             />
-            <button disabled={isLoading}>Sign up</button>
+            <div className='center'>
+                <button disabled={isLoading}>Sign up</button>
+            </div>
             {error && <div className="error">{error}</div>}
         </form>
     )

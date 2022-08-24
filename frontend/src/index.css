@@ -252,6 +252,7 @@ form.signup, form.login {
   border-radius: 10px;
   text-decoration: none;
   transition-duration: 200ms;
+  text-align: center;
 }
 
 .start:hover {
@@ -316,4 +317,23 @@ table tr td:nth-child(1){
 
 table tr:hover {
   background-color: #ddd;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+  gap: 20px;
+  padding: 20px 0px;
+  justify-content: center;
+}
+
+.center {
+  text-align: center;
+}
+
+.question {
+  max-width: 420px;
+  width: 420px;
+  text-align: center;
+  margin: 0 auto;
 }

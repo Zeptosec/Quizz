@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import LetterButtons from "../components/LetterButtons";
 
 import { useLayout } from "../hooks/useLayout";
 
@@ -15,7 +16,7 @@ const Quiz = () => {
     const handleCheck = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        const res = await fetch("http://localhost:4000/api/tasks/check", {
+        const res = await fetch("https://latinapi.herokuapp.com/api/tasks/check", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ answer, id: task._id })
@@ -39,7 +40,7 @@ const Quiz = () => {
 
     const handleNext = async () => {
         setIsLoading(true);
-        const res = await fetch("http://localhost:4000/api/tasks/next");
+        const res = await fetch("https://latinapi.herokuapp.com/api/tasks/next");
         const json = await res.json();
 
         if (!res.ok) {
@@ -68,7 +69,8 @@ const Quiz = () => {
             <div className="score">
                 <span className="green">{counter.right}</span>/<span className="red">{counter.wrong}</span>
             </div>
-            <p>{message}</p>
+            <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
+            <p className="center">{message}</p>
         </div>
     )
 }

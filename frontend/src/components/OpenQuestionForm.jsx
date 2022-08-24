@@ -40,7 +40,7 @@ const OpenQuestionForm = () => {
         let answers = [];
         inputList.map(x => answers.push(x.answer));
 
-        const res = await fetch("http://localhost:4000/api/admin", {
+        const res = await fetch("https://latinapi.herokuapp.com/api/admin", {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const OpenQuestionForm = () => {
                         value={x.answer} />
                 </div>
             ))}
-            <div>
+            <div className="center">
                 <button type="button" onClick={handleAddClick}>More</button>
                 <button type="button" onClick={handleRemoveClick}>Less</button>
                 <button disabled={isLoading}>Submit</button>

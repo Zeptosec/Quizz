@@ -49,11 +49,14 @@ const getQuestionFromTestTask = async (task) => {
 
 const getTestTask = async (req, res) => {
     const { uid } = req.body;
-    console.log(uid);
-    if (!mongoose.Types.ObjectId.isValid(uid)) {
+
+    if (!uid) {
+        return res.status(400).json({ error: "User id is required" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(uid) && uid !== "null") {
         return res.status(400).json({ error: "Invalid user ID" });
     }
-    if (!uid) { // if this user does not have an id
+    if (uid === "null") { // if this user does not have an id
         try {
             // create new test for this user and assign a new user id
             const { test, uuid } = await newTest(null);
@@ -111,6 +114,9 @@ const postTestAnswer = async (req, res) => {
     if (!answer) {
         return res.status(400).json({ error: "Answer is required" });
     }
+    if (answer.length > 69) {
+        return res.status(400).json({ error: "Answer is too long" });
+    }
     if (!mongoose.Types.ObjectId.isValid(tid)) {
         return res.status(400).json({ error: "Test id is not valid" });
     }
@@ -156,10 +162,10 @@ const postTestAnswer = async (req, res) => {
             const finishedAt = Date.now();
             const diff = finishedAt - test.createdAt;
             let score = 0;
-            if(testPoints > 0){
+            if (testPoints > 0) {
                 score = testPoints / diff * 314159;
             }
-            console.log(score, diff);
+            console.log(score, diff, testPoints);
             await Test.findByIdAndUpdate(test._id, { finished: true, finishedAt, points: testPoints, score });
             return res.status(200).json({ finished: true, tid: test._id });
         }

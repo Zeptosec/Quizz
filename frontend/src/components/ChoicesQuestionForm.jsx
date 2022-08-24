@@ -31,7 +31,7 @@ const ChoicesQuestionForm = () => {
 
     const handleSubmit = async function (e) {
         e.preventDefault();
-        if(!user){
+        if (!user) {
             setMessage("First log in");
             return;
         }
@@ -51,9 +51,9 @@ const ChoicesQuestionForm = () => {
         let answers = [];
         answersList.map(x => answers.push(x));
 
-        const res = await fetch("http://localhost:4000/api/admin", {
+        const res = await fetch("https://latinapi.herokuapp.com/api/admin", {
             method: "POST",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
                 'Authorization': `Bearer ${user.token}`
             },
@@ -115,18 +115,20 @@ const ChoicesQuestionForm = () => {
                         value={x.answer} />
                 </div>
             ))}
-            <div>
+            <div className="center">
                 <button type="button" onClick={handleAddClick}>More</button>
                 <button type="button" onClick={handleRemoveClick}>Less</button>
             </div>
-            <p><b>Answers:</b></p>
-            {answersList && answersList.map((x, i) => (
-                <div key={i}>
-                    <p>{inputList[x].answer}</p>
-                </div>
-            ))}
-            <button disabled={isLoading}>Submit</button>
-            {message}
+            <div className="center">
+                <p><b>Answers:</b></p>
+                {answersList && answersList.map((x, i) => (
+                    <div key={i}>
+                        <p>{inputList[x].answer}</p>
+                    </div>
+                ))}
+                <button disabled={isLoading}>Submit</button>
+                {message}
+            </div>
         </form>
     )
 }

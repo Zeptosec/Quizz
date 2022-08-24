@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import TestResults from '../components/TestResults';
-import formatDuration from 'date-fns/formatDuration';
 
 const Leaderboard = () => {
     const [results, setResults] = useState(null);
@@ -8,7 +7,7 @@ const Leaderboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await fetch('http://localhost:4000/api/leaderboard');
+            const res = await fetch('https://latinapi.herokuapp.com/api/leaderboard');
             const json = await res.json();
 
             setError("");

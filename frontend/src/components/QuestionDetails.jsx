@@ -10,7 +10,7 @@ const QuestionDetails = ({ question }) => {
         if(!user) {
             return;
         }
-        const res = await fetch('http://localhost:4000/api/admin/'+question._id, {
+        const res = await fetch('https://latinapi.herokuapp.com/api/admin/'+question._id, {
             method: "DELETE",
             headers: {
                 'Authorization': `Bearer ${user.token}`
