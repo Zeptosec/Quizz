@@ -19,12 +19,13 @@ const Test = () => {
         const loadQuestion = async () => {
             setIsLoading(true);
             let tmpUser = JSON.parse(localStorage.getItem("tmpUser"));
+            console.log(tmpUser.uid);
             if (tmpUser) {
+                console.log("called");
                 setUid(tmpUser.uid);
             } else {
                 tmpUser = { uid: "null" };
             }
-
             const res = await fetch('https://latinapi.herokuapp.com/api/test', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -38,12 +39,12 @@ const Test = () => {
             } else {
                 if (tmpUser.uid === 'null') {
                     localStorage.setItem("tmpUser", JSON.stringify({ uid: json.uid }))
+                    setUid(json.uid);
                 }
                 setError(null);
                 setTask(json.task);
                 setTid(json.tid);
                 setAnswer("");
-                setUid(json.uid);
             }
             setIsLoading(false);
         }
