@@ -3,6 +3,7 @@ import { useState } from "react";
 import TestResults from "../components/TestResults";
 import { useLayout } from "../hooks/useLayout";
 import LetterButtons from "../components/LetterButtons";
+import { Link } from "react-router-dom";
 
 const Test = () => {
     const [answer, setAnswer] = useState("");
@@ -166,17 +167,25 @@ const Test = () => {
                 <>
                     <h2 className="center">Results:</h2>
                     <TestResults headers={results.headers} data={results.data} />
-                    <form action="" className="signup" onSubmit={handleNick}>
-                        <label><h3 className="center">Nickname:</h3></label>
-                        <input
-                            type="text"
-                            onChange={e => setNickName(e.target.value)}
-                            value={nickname}
-                        />
+                    <h3 className="center">Score: {Math.floor(results.score * 100) / 100}</h3>
+                    {results.score >= 0.05 ?
+                        <form action="" className="signup" onSubmit={handleNick}>
+                            <h2 className="center">Publish to leaderboard</h2>
+                            <label><h3 className="center">Nickname:</h3></label>
+                            <input
+                                type="text"
+                                onChange={e => setNickName(e.target.value)}
+                                value={nickname}
+                            />
+                            <div className="center">
+                                <button disabled={isLoading}>Submit</button>
+                            </div>
+                        </form>
+                        :
                         <div className="center">
-                            <button disabled={isLoading}>Submit</button>
-                        </div>
-                    </form>
+                            <h3>Can't publish results</h3>
+                            <Link to='/' className="start">Home</Link>
+                        </div>}
                 </>
                 : ""}
             <p className="center">{error}</p>

@@ -161,10 +161,7 @@ const postTestAnswer = async (req, res) => {
             const testPoints = test.tasks.reduce((acc, obj) => acc + obj.points, 0) + points;
             const finishedAt = Date.now();
             const diff = finishedAt - test.createdAt;
-            let score = 0;
-            if (testPoints > 0) {
-                score = testPoints / diff * 314159;
-            }
+            let score = testPoints / diff * 314159;
             console.log(score, diff, testPoints);
             await Test.findByIdAndUpdate(test._id, { finished: true, finishedAt, points: testPoints, score });
             return res.status(200).json({ finished: true, tid: test._id });
@@ -208,7 +205,8 @@ const getTestResults = async (req, res) => {
         }
         let results = {
             headers: ["Question", "Your answer", "Points"],
-            data
+            data,
+            score: test.score
         }
 
         res.status(200).json({ results });
@@ -250,9 +248,12 @@ const submitTest = async (req, res) => {
         if (!test.finished) {
             throw Error("Can not publish unfinished test");
         }
+        if (test.score <= 0.05) {
+            throw Error("You can only publish your test if your score is greater or equal to 0.05");
+        }
         const result = await Test.findByIdAndUpdate(tid, {
             nickname,
-            published: true
+            published: true,
         });
         res.status(200).json({ message: "Submitted!" });
     } catch (err) {
