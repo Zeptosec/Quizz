@@ -7,7 +7,7 @@ const Leaderboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await fetch('https://latinapi.herokuapp.com/api/leaderboard');
+            const res = await fetch('https://latinapi.cyclic.app/api/leaderboard');
             const json = await res.json();
 
             setError("");

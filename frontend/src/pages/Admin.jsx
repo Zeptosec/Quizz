@@ -21,7 +21,7 @@ const Admin = () => {
     useEffect(() => {
         handleResize();
         const fetchQuestions = async () => {
-            const res = await fetch('https://latinapi.herokuapp.com/api/admin', {
+            const res = await fetch('https://latinapi.cyclic.app/api/admin', {
                 headers: {
                     'Authorization': `Bearer ${user.token}`
                 }

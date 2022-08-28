@@ -40,7 +40,7 @@ const OpenQuestionForm = () => {
         let answers = [];
         inputList.map(x => answers.push(x.answer));
 
-        const res = await fetch("https://latinapi.herokuapp.com/api/admin", {
+        const res = await fetch("https://latinapi.cyclic.app/api/admin", {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",

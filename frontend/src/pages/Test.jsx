@@ -29,7 +29,7 @@ const Test = () => {
             } else {
                 tmpUser = { uid: "null" };
             }
-            const res = await fetch('https://latinapi.herokuapp.com/api/test', {
+            const res = await fetch('https://latinapi.cyclic.app/api/test', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ uid: tmpUser.uid })
@@ -72,7 +72,7 @@ const Test = () => {
             setError("No test id was given");
             return;
         }
-        const res = await fetch('https://latinapi.herokuapp.com/api/test/results', {
+        const res = await fetch('https://latinapi.cyclic.app/api/test/results', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tid })
@@ -103,7 +103,7 @@ const Test = () => {
             return;
         }
         console.log(task);
-        const res = await fetch('https://latinapi.herokuapp.com/api/test/answer', {
+        const res = await fetch('https://latinapi.cyclic.app/api/test/answer', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ answer, tid, qid: task.qid })
@@ -141,7 +141,7 @@ const Test = () => {
             return;
         }
 
-        const res = await fetch('https://latinapi.herokuapp.com/api/test/submit', {
+        const res = await fetch('https://latinapi.cyclic.app/api/test/submit', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tid, uid, nickname })

@@ -16,7 +16,7 @@ const Quiz = () => {
     const handleCheck = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        const res = await fetch("https://latinapi.herokuapp.com/api/tasks/check", {
+        const res = await fetch("https://latinapi.cyclic.app/api/tasks/check", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ answer, id: task._id })
@@ -40,7 +40,7 @@ const Quiz = () => {
 
     const handleNext = async () => {
         setIsLoading(true);
-        const res = await fetch("https://latinapi.herokuapp.com/api/tasks/next");
+        const res = await fetch("https://latinapi.cyclic.app/api/tasks/next");
         const json = await res.json();
         console.log(json)
         if (!res.ok) {
