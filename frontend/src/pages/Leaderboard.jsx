@@ -28,7 +28,7 @@ const Leaderboard = () => {
             {results === null ? ""
                 : <TestResults headers={results.headers} data={results.data} />
             }
-            {error}
+            <p className="center">{error}</p>
         </div>
     )
 }

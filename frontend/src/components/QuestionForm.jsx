@@ -12,7 +12,7 @@ const QuestionForm = () => {
 
     return (
         <div>
-            <h3>Add New Question</h3>
+            <h3 className="center">Add New Question</h3>
             <label htmlFor="type">Type</label>
             <select name="type" id="type" defaultValue="free" onChange={handleType}>
                 <option value="free">Free</option>

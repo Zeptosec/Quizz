@@ -20,9 +20,7 @@ const Test = () => {
         const loadQuestion = async () => {
             setIsLoading(true);
             let tmpUser = JSON.parse(localStorage.getItem("tmpUser"));
-            console.log(tmpUser.uid);
             if (tmpUser) {
-                console.log("called");
                 setUid(tmpUser.uid);
             } else {
                 tmpUser = { uid: "null" };
@@ -157,12 +155,19 @@ const Test = () => {
     return (
         <div className="test">
             {results !== null ? "" :
-                <form action="" className="question" onSubmit={handleSubmit}>
-                    {getLayout()}
-                    <button disabled={isLoading}>Next</button>
-                    <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
+                <>
+                    {tid ?
+                        <form action="" className="question" onSubmit={handleSubmit}>
+                            {getLayout()}
+                            <button disabled={isLoading}>Next</button>
+                            <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
 
-                </form>}
+                        </form>
+                        :
+                        <h2 className="center">Getting test...</h2>
+                    }
+                </>
+            }
             {results !== null ?
                 <>
                     <h2 className="center">Results:</h2>

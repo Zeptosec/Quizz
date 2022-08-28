@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
@@ -5,10 +6,19 @@ import { useLogout } from "../hooks/useLogout";
 const Navbar = () => {
     const { logout } = useLogout();
     const { user } = useAuthContext();
+    const [visible, setVisible] = useState(true);
 
     const handleLogout = () => {
         logout();
     }
+
+    window.addEventListener('resize', function() {
+        if(this.window.innerWidth > 400){
+            setVisible(true);
+        } else {
+            setVisible(false);
+        }
+    })
 
     return (
         <header>
@@ -18,12 +28,12 @@ const Navbar = () => {
                 </Link>
                 <nav>
                     {user && <div>
-                        <span>{user.email}</span>
+                        {visible ? <span>{user.email}</span> : ""}
                         {user.email === "virgil@gmail.com" ? <Link to="/admin">Admin</Link> : ""}
                         <button onClick={handleLogout}>Log out</button>
                     </div>}
                     <div>
-                        
+
                     </div>
                     {!user && <div>
                         <Link to="/login">Login</Link>

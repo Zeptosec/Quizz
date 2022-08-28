@@ -28,7 +28,7 @@ const Signup = () => {
                 value={password}
             />
             <div className='center'>
-                <button disabled={isLoading}>Sign up</button>
+                {isLoading ? <p>Waiting...</p> : <button>Sign up</button>}
             </div>
             {error && <div className="error">{error}</div>}
         </form>

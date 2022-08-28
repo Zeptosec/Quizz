@@ -1,6 +1,7 @@
 :root {
   --primary: #1aac83;
   --selected: rgb(2, 69, 255);
+  --disabled: rgb(78, 78, 78);
   --selected-hover: rgb(86, 131, 255);
   --error: #e7195a;
 }
@@ -60,6 +61,12 @@ code {
   grid-template-columns: 2fr 1fr;
 }
 
+@media (max-width: 500px) {
+  .quiz {
+    grid-template-columns: auto;
+  }
+}
+
 .quiz .score {
   margin: auto;
   font-size: 2cm;
@@ -68,8 +75,8 @@ code {
 
 .pages {
   margin: 0 auto;
-  max-width: 90%;
   padding: 20px;
+  overflow-y: auto;
 }
 
 nav {
@@ -184,6 +191,11 @@ form button {
   cursor: pointer;
 }
 
+form button:disabled {
+  background: var(--disabled);
+  cursor: not-allowed;
+}
+
 div.error {
   padding: 10px;
   background: #ffefef;
@@ -235,7 +247,8 @@ input.error {
   margin: 11px;
 }
 
-form.signup, form.login {
+form.signup,
+form.login {
   max-width: 400px;
   margin: 20px auto;
   padding: 20px;
@@ -262,7 +275,7 @@ form.signup, form.login {
 }
 
 .start:active {
-  background-color:green;
+  background-color: green;
   border-color: green;
 }
 
@@ -286,6 +299,7 @@ form.signup, form.login {
 
 .questions {
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 html {
@@ -302,16 +316,17 @@ table th {
   color: white;
 }
 
-table td, table th {
+table td,
+table th {
   border: 1px solid #ddd;
   padding: 6px;
 }
 
-table tr:nth-child(even){
+table tr:nth-child(even) {
   background-color: #eee;
 }
 
-table tr td:nth-child(1){
+table tr td:nth-child(1) {
   text-align: left;
 }
 
@@ -322,9 +337,20 @@ table tr:hover {
 .buttons {
   display: grid;
   grid-template-columns: auto auto auto auto auto auto;
-  gap: 20px;
+  gap: 10px;
   padding: 20px 0px;
   justify-content: center;
+}
+
+@media (max-width: 350px) {
+
+  .buttons {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 10px;
+    padding: 20px 0px;
+    justify-content: center;
+  }
 }
 
 .center {
@@ -333,7 +359,6 @@ table tr:hover {
 
 .question {
   max-width: 420px;
-  width: 420px;
   text-align: center;
   margin: 0 auto;
 }

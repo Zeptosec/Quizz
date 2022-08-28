@@ -42,7 +42,7 @@ const Quiz = () => {
         setIsLoading(true);
         const res = await fetch("https://latinapi.herokuapp.com/api/tasks/next");
         const json = await res.json();
-
+        console.log(json)
         if (!res.ok) {
             setMessage(json.error);
         } else {
@@ -60,17 +60,27 @@ const Quiz = () => {
     }, []);
 
     return (
-        <div className="quiz">
-            <form className="question" onSubmit={handleCheck}>
-                {getLayout()}
-                <button disabled={isLoading}>Check</button>
-                {isCorrect != null && <button disabled={isLoading} onClick={handleNext}>Next</button>}
-            </form>
-            <div className="score">
-                <span className="green">{counter.right}</span>/<span className="red">{counter.wrong}</span>
-            </div>
-            <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
-            <p className="center">{message}</p>
+        <div>
+            {task.question ?
+                <div className="quiz">
+                    <div>
+                        <form className="question" onSubmit={handleCheck}>
+                            {getLayout()}
+                            <button disabled={isLoading}>Check</button>
+                            {isCorrect != null && <button disabled={isLoading} onClick={handleNext}>Next</button>}
+                        </form>
+                        <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
+                    </div>
+                    <div className="score">
+                        <span className="green">{counter.right}</span>/<span className="red">{counter.wrong}</span>
+                    </div>
+                    <p className="center">{message}</p>
+                </div>
+                :
+                <>
+                    <h2 className="center">Getting question...</h2>
+                    <p className="center">{message}</p>
+                </>}
         </div>
     )
 }
