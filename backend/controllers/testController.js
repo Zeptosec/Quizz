@@ -29,7 +29,8 @@ const newTest = async (uid) => {
         finished: false,
         published: false,
         nickname: "N/A",
-        score: 0
+        score: 0,
+        expiresIn: 600000
     });
     return { uuid, test };
 }
@@ -47,6 +48,13 @@ const getQuestionFromTestTask = async (task) => {
     };
 }
 
+const getTimeLeft = (test) => {
+    if (!test.expiresIn) {
+        throw Error("Previous test expired");
+    }
+    return test.createdAt.getTime() + test.expiresIn - Date.now();
+}
+
 const getTestTask = async (req, res) => {
     const { uid } = req.body;
 
@@ -61,42 +69,61 @@ const getTestTask = async (req, res) => {
             // create new test for this user and assign a new user id
             const { test, uuid } = await newTest(null);
             const question = await getQuestionFromTestTask(test.tasks[0]);
-            return res.status(200).json({ uid: uuid, task: question, finished: false, tid: test._id });
+            const expiresIn = getTimeLeft(test);
+            return res.status(200).json({ uid: uuid, task: question, finished: false, tid: test._id, expiresIn });
         } catch (err) {
             console.log(err);
             return res.status(400).json({ error: err.message });
         }
     } else { // if user exists
         //trying to locate previous test
-        const pt = await Test.find({ userid: uid }).where('finished').equals(false);
-        const previousTest = pt[0];
+        let pt = await Test.find({ userid: uid, finished: false, expired: false })
+        for (let i = 0; i < pt.length; i++) {
+            const prevt = pt[i];
+            const expiresIn = getTimeLeft(prevt);
+            if (expiresIn < 1) {
+                await Test.findByIdAndUpdate(prevt._id, { expired: true });
+                pt[i].expired = true;
+            }
+        }
+        let previousTest = pt.find(w => w.expired === false)
+
         // if there is no such test
         if (!previousTest) {
             // create new test
             try {
                 const { test } = await newTest(uid);
                 const question = await getQuestionFromTestTask(test.tasks[0]);
-                return res.status(200).json({ task: question, finished: false, tid: test._id });
+                const expiresIn = getTimeLeft(test);
+                return res.status(200).json({ task: question, finished: false, tid: test._id, expiresIn });
             } catch (err) {
                 console.log(err);
                 res.status(400).json({ error: err.message });
             }
         } else { // if there was an unfinished test
             // find first unanswered question
-            const task = previousTest.tasks.find(w => w.answered === false);
-            if (!task) { // if all questions were answered
-                // mark test as finished. Something like this shouldn't happen
-                await Test.findByIdAndUpdate(previousTest._id, { finished: true });
-                return res.status(200).json({ finished: true, tid: previousTest._id });
-            } else {
-                // return the first unanswered question on test
-                try {
-                    const question = await getQuestionFromTestTask(task);
-                    return res.status(200).json({ task: question, finished: false, tid: previousTest._id });
-                } catch (err) {
-                    console.log(err);
-                    return res.status(400).json({ error: err.message });
+            try {
+                let expiresIn = getTimeLeft(previousTest);
+                console.log(pt)
+                if (expiresIn < 1) {
+                    await Test.findByIdAndUpdate(previousTest._id, { expired: true });
+                    const { test } = await newTest(uid);
+                    previousTest = test;
+                    expiresIn = getTimeLeft(test);
                 }
+                const task = previousTest.tasks.find(w => w.answered === false);
+                if (!task) { // if all questions were answered
+                    // mark test as finished. Something like this shouldn't happen
+                    await Test.findByIdAndUpdate(previousTest._id, { finished: true });
+                    return res.status(200).json({ finished: true, tid: previousTest._id });
+                } else {
+                    // return the first unanswered question on test
+                    const question = await getQuestionFromTestTask(task);
+                    return res.status(200).json({ task: question, finished: false, tid: previousTest._id, expiresIn });
+                }
+            } catch (err) {
+                console.log(err);
+                return res.status(400).json({ error: err.message });
             }
         }
     }
@@ -128,6 +155,10 @@ const postTestAnswer = async (req, res) => {
         const test = await Test.findById(tid);
         if (!test) {
             throw Error("There are no open tests");
+        }
+        const expiresIn = getTimeLeft(test);
+        if (expiresIn < 1) {
+            throw Error("Test expired");
         }
         if (test.finished) {
             throw Error("Test was finished");
@@ -171,7 +202,7 @@ const postTestAnswer = async (req, res) => {
         if (!question) {
             throw Error("Could not find the question");
         }
-        res.status(200).json({ task: question, finished: false, tid: test._id });
+        res.status(200).json({ task: question, finished: false, tid: test._id, expiresIn });
 
     } catch (err) {
         console.log(err);

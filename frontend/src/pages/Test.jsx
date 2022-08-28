@@ -4,10 +4,12 @@ import TestResults from "../components/TestResults";
 import { useLayout } from "../hooks/useLayout";
 import LetterButtons from "../components/LetterButtons";
 import { Link } from "react-router-dom";
+import { useCountDown } from "../hooks/useCountDown";
 
 const Test = () => {
     const [answer, setAnswer] = useState("");
     const [task, setTask] = useState({});
+    const [timeLeft, setTimeLeft] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [uid, setUid] = useState(null);
@@ -15,8 +17,10 @@ const Test = () => {
     const [results, setResults] = useState(null);
     const { getLayout } = useLayout(task, answer, setAnswer);
     const [nickname, setNickName] = useState("");
+    const countDown = useCountDown(timeLeft);
 
     useEffect(() => {
+
         const loadQuestion = async () => {
             setIsLoading(true);
             let tmpUser = JSON.parse(localStorage.getItem("tmpUser"));
@@ -32,7 +36,6 @@ const Test = () => {
             });
 
             const json = await res.json();
-            console.log(json);
             if (!res.ok) {
                 setError(json.error);
             } else {
@@ -43,6 +46,7 @@ const Test = () => {
                 setError(null);
                 setTask(json.task);
                 setTid(json.tid);
+                setTimeLeft(json.expiresIn + Date.now());
                 setAnswer("");
             }
             setIsLoading(false);
@@ -112,6 +116,8 @@ const Test = () => {
                 setTask(json.task);
                 setTid(json.tid);
                 setAnswer("");
+                setTimeLeft(json.expiresIn + Date.now());
+                console.log(json);
             }
         } else {
             setError("Could not retrieve task");
@@ -158,10 +164,15 @@ const Test = () => {
                 <>
                     {tid ?
                         <form action="" className="question" onSubmit={handleSubmit}>
-                            {getLayout()}
-                            <button disabled={isLoading}>Next</button>
-                            <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
-
+                            {isNaN(countDown) ? <p className='time'>Calculating...</p> : <p className={`time ${countDown < 30 ? "red" : ""}`}>{countDown > 0 ? `Time left: ${countDown}s` : "Out of time"}</p>}
+                            {(isNaN(countDown) ||countDown > 0) ?
+                                <>
+                                    {getLayout()}
+                                    <button disabled={isLoading}>Next</button>
+                                    <LetterButtons answer={answer} setAnswer={setAnswer} letters={['ā', 'ē', 'ë', 'ī', 'ō', 'ū']} />
+                                </>
+                                :
+                                ""}
                         </form>
                         :
                         <h2 className="center">Getting test...</h2>

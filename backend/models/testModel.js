@@ -35,6 +35,14 @@ const testSchema = new Schema({
     points: {
         type: Number,
         default: 0
+    },
+    expiresIn: {
+        type: Number,
+        default: 600000
+    },
+    expired: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

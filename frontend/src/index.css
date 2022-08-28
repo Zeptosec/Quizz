@@ -6,6 +6,10 @@
   --error: #e7195a;
 }
 
+.time {
+  font-size: large;
+}
+
 .green {
   color: green;
 }
