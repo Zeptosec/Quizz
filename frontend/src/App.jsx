@@ -9,6 +9,7 @@ import Signup from './pages/Signup';
 import Test from './pages/Test';
 import Leaderboard from './pages/Leaderboard';
 import { useRef } from 'react';
+import { Helmet } from 'react-helmet'
 
 function App() {
   const { user } = useAuthContext();
@@ -21,6 +22,10 @@ function App() {
 
   return (
     <div className="App">
+      <Helmet>
+        <title>Latin quiz</title>
+        <meta name='description' content='Test your latin skills with this latin quiz see how well you performed compared to others.'/>
+      </Helmet>
       <BrowserRouter>
         <Navbar />
         <div ref={tref} className="pages">
